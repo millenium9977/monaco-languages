@@ -78,6 +78,7 @@ bundleOne('apex/apex');
 bundleOne('tcl/tcl');
 bundleOne('graphql/graphql');
 bundleOne('twig/twig');
+bundleOne('dimo/dimo');
 
 function bundleOne(moduleId, exclude) {
 	requirejs.optimize({
