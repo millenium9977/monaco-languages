@@ -40,7 +40,6 @@ export const language = <ILanguage>{
 	tokenPostfix: '.dimo',
 	ignoreCase: false,
 
-
 	keywords: [
 		'SATISFIABLE', 'WITH', 'MODELS', 'EQUIVALENT',
 		'VALID', 'PROPOSITIONS', 'PARAMETERS',
@@ -55,17 +54,20 @@ export const language = <ILanguage>{
 		'true', 'false'
 	],
 
-	symbols: /[=><+\-*\^&|]+/,
+	symbols: /[=><+\-*^&|]+/,
 
 	operators: ['LOG', '+', '-', '*', '^', 'MOD',
-		'MIN', 'MAX', '=', '<=', '>=', '<', '>',
+		'=', '<=', '>=', '<', '>',
 		'<>', '-'],
 
-	digits: /[]/,
+	// digits: /[]/,
 
 	junctions: ['&', '|', '->', '<->', 'FORALL',
 		'FORSOME'],
 
+	setOperation: [ '&', '|', '-'],
+
+	accumulation: [ 'MAX', 'MIN' ],
 
 	tokenizer: {
 		root: [
@@ -74,7 +76,9 @@ export const language = <ILanguage>{
 				cases: {
 					'@keywords': 'keyword',
 					'@junctions' : 'junction',
-					'@constants' : 'constant'
+					'@operators' : 'operator',
+					'@constants' : 'constant',
+					'@accumulation' : 'accumulation'
 				}
 			}],
 			// whitespace
@@ -82,7 +86,8 @@ export const language = <ILanguage>{
 
 			//Identifier
 			[/\b[A-Z][a-zA-Z0-9]*\b/, 'identifier'],
-
+			//Negation of a Formula
+			[/-(?=[A-Z][a-zA-Z0-9]*)/, 'negation'],
 			//Variables
 			[/\b[a-z][a-zA-Z0-9]*\b/, {cases: {
 					'@booleans' : 'boolean',
@@ -92,6 +97,8 @@ export const language = <ILanguage>{
 			//brackets
 			[/[{}()\[\]]/, '@brackets'],
 
+			//Set Operators
+			[/[&|\-](?=\s*{)/, 'set.operator'],
 			//Operators
 			[/@symbols/, {
 				cases: {
@@ -101,8 +108,8 @@ export const language = <ILanguage>{
 				}
 			}],
 
-			[/,/, 'delimiter'],
-
+			[/\.\./, 'enumeration'],
+			[/[,.:]/, 'delimiter'],
 			//Numbers
 			[/[\d_]+/, 'number'],
 		],
